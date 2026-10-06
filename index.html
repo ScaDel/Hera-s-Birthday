@@ -7,7 +7,7 @@
 
     <title>Hera's Birthday❤️</title>
 
-    <link rel="icon" type="image/jpeg" href="favicon.jpeg">
+    <link rel="icon" type="image/png" href="favicon.png">
 
     <link rel="stylesheet" href="style.css">
 
@@ -15,15 +15,45 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Great+Vibes&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 </head>
+
 <body>
 
-    <!-- BACKGROUND EFFECTS -->
     <div id="stars"></div>
     <div id="particles"></div>
 
-    <!-- ========================= -->
-    <!-- SCENE ONE -->
-    <!-- ========================= -->
+
+    <!-- ==========================
+         START EXPERIENCE
+    =========================== -->
+
+    <div id="startScreen">
+
+        <div id="startContent">
+
+            <div class="start-small">
+                A little surprise for you...
+            </div>
+
+            <h1>Hera</h1>
+
+            <div class="start-line"></div>
+
+            <p>
+                Something special is waiting.
+            </p>
+
+            <button id="startButton">
+                Begin ✨
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ==========================
+         COUNTDOWN
+    =========================== -->
 
     <section id="countdownScene">
 
@@ -55,7 +85,10 @@
 
     </section>
 
-    <!-- BLACK TRANSITION -->
+
+    <!-- ==========================
+         TRANSITION
+    =========================== -->
 
     <section id="transitionScene">
 
@@ -63,83 +96,102 @@
 
     </section>
 
-    <!-- ========================= -->
-    <!-- SCENE TWO -->
-    <!-- ========================= -->
+
+    <!-- ==========================
+         BIRTHDAY
+    =========================== -->
 
     <section id="birthdayScene">
 
-        <h1 id="birthdayTitle">Happy 20th Birthday</h1>
+        <h1 id="birthdayTitle">
+            Happy 20th Birthday
+        </h1>
+
 
         <img
             src="hera.jpeg"
             id="birthdayPhoto"
             alt="Birthday Girl">
 
+
+        <!-- ==========================
+             POEM
+        =========================== -->
+
         <div id="poemOverlay">
 
-    <div id="poem">
+            <div id="poem">
 
-        <p class="poem-part">
-            <strong>WOW!</strong><br>
-            JUST THE OTHER DAY, YOU WERE 18,<br>
-            NOW, 20...
-        </p>
+                <p class="poem-part">
+                    <strong>WOW!</strong><br>
+                    JUST THE OTHER DAY, YOU WERE 18,<br>
+                    NOW, 20...
+                </p>
 
-        <p class="poem-part">
-            IT'S A NEW YEAR... A NEW SEASON.<br>
-            NOW,<br>
-            IT'S A NEW BEGINNING,<br>
-            WHERE BUILDING AND DESTRUCTION<br>
-            IS VERY CLOSE TO YOU.
-        </p>
+                <p class="poem-part">
+                    IT'S A NEW YEAR... A NEW SEASON.<br>
+                    NOW,<br>
+                    IT'S A NEW BEGINNING,<br>
+                    WHERE BUILDING AND DESTRUCTION<br>
+                    IS VERY CLOSE TO YOU.
+                </p>
 
-        <p class="poem-part">
-            IT'S A TIME WHEN,<br>
-            LIFE CAN BE YOUR BEST FRIEND,<br>
-            OR YOUR WORST ENEMY.
-        </p>
+                <p class="poem-part">
+                    IT'S A TIME WHEN,<br>
+                    LIFE CAN BE YOUR BEST FRIEND,<br>
+                    OR YOUR WORST ENEMY.
+                </p>
 
-        <p class="poem-part">
-            BUT IN THIS SEASON,<br>
-            IT'LL BE YOUR BEST.
-        </p>
+                <p class="poem-part">
+                    BUT IN THIS SEASON,<br>
+                    IT'LL BE YOUR BEST.
+                </p>
 
-        <p class="poem-part">
-            WISDOM IS YOUR PORTION.<br>
-            LOVE IS YOUR PORTION.<br>
-            SUCCESS IS YOUR PORTION.<br>
-            BLESSINGS ARE YOUR PORTION.
-        </p>
+                <p class="poem-part">
+                    WISDOM IS YOUR PORTION.<br>
+                    LOVE IS YOUR PORTION.<br>
+                    SUCCESS IS YOUR PORTION.<br>
+                    BLESSINGS ARE YOUR PORTION.
+                </p>
 
-        <p class="poem-part">
-            EVERYTHING ALIGNS.
-        </p>
+                <p class="poem-part">
+                    EVERYTHING ALIGNS.
+                </p>
 
-        <p class="poem-part">
-            GOODNESS & MERCY FOLLOW YOU,<br>
-            AND THE LORD'S FACE SHINES UPON YOU.
-        </p>
+                <p class="poem-part">
+                    GOODNESS & MERCY FOLLOW YOU,<br>
+                    AND THE LORD'S FACE SHINES UPON YOU.
+                </p>
 
-        <p class="poem-part final-line">
-            IT'S YOUR TIME,<br>
-            IT'S YOUR SEASON.<br>
-            LET YOUR LIGHT SHINE.
-        </p>
+                <p class="poem-part final-line">
+                    IT'S YOUR TIME,<br>
+                    IT'S YOUR SEASON.<br>
+                    LET YOUR LIGHT SHINE.
+                </p>
 
-    </div>
+            </div>
 
-</div>
+        </div>
 
     </section>
 
-    <!-- MUSIC -->
 
-    <audio id="music" src="Worship.mp3"></audio>
+    <!-- ==========================
+         MUSIC
+    =========================== -->
+
+    <audio
+        id="music"
+        src="Worship.mp3"
+        preload="auto">
+    </audio>
+
+
+    <!-- Confetti library MUST load before script.js -->
 
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
-   <script src="script.js"></script>
+    <script src="script.js"></script>
 
 </body>
 </html>
