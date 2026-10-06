@@ -23,6 +23,131 @@ body{
 
 }
 
+/* ==========================
+   START EXPERIENCE
+========================== */
+
+#startScreen {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: #000;
+
+    text-align: center;
+
+    transition:
+        opacity 1.5s ease,
+        visibility 1.5s ease;
+}
+
+
+#startContent {
+    padding: 30px;
+}
+
+
+.start-small {
+    font-family: "Poppins", sans-serif;
+
+    font-size: 12px;
+
+    letter-spacing: 3px;
+
+    text-transform: uppercase;
+
+    color: rgba(255, 255, 255, 0.55);
+
+    margin-bottom: 18px;
+}
+
+
+#startContent h1 {
+    margin: 0;
+
+    font-family: "Great Vibes", cursive;
+
+    font-size: clamp(60px, 12vw, 110px);
+
+    font-weight: 400;
+
+    color: white;
+
+    text-shadow:
+        0 0 10px rgba(255,255,255,0.25),
+        0 0 30px rgba(94,42,132,0.8);
+}
+
+
+.start-line {
+    width: 60px;
+    height: 1px;
+
+    margin: 20px auto;
+
+    background: rgba(255,255,255,0.5);
+}
+
+
+#startContent p {
+    font-family: "Poppins", sans-serif;
+
+    font-size: 14px;
+
+    letter-spacing: 1px;
+
+    color: rgba(255,255,255,0.7);
+
+    margin-bottom: 35px;
+}
+
+
+#startButton {
+    padding: 13px 32px;
+
+    border: 1px solid rgba(255,255,255,0.45);
+
+    border-radius: 30px;
+
+    background: rgba(255,255,255,0.05);
+
+    color: white;
+
+    font-family: "Poppins", sans-serif;
+
+    font-size: 13px;
+
+    letter-spacing: 2px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.4s ease,
+        transform 0.4s ease,
+        box-shadow 0.4s ease;
+}
+
+
+#startButton:hover {
+    background: rgba(255,255,255,0.12);
+
+    transform: scale(1.05);
+
+    box-shadow:
+        0 0 20px rgba(255,255,255,0.15);
+}
+
+
+#startScreen.hide {
+    opacity: 0;
+    visibility: hidden;
+
+    pointer-events: none;
+}
 
 /* ===========================
    SCENES
