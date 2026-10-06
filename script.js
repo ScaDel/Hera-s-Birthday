@@ -2,6 +2,9 @@
    ELEMENTS
 ========================== */
 
+const startScreen = document.getElementById("startScreen");
+const startButton = document.getElementById("startButton");
+
 const countdownScene = document.getElementById("countdownScene");
 const transitionScene = document.getElementById("transitionScene");
 const birthdayScene = document.getElementById("birthdayScene");
@@ -21,38 +24,153 @@ const poemParts = document.querySelectorAll(".poem-part");
 
 
 /* ==========================
-   DEVELOPER MODE
-   Press "B" to launch
+   STATE
 ========================== */
 
-document.addEventListener("keydown", (event) => {
+let timer = null;
 
-    if (event.key.toLowerCase() === "b") {
+let birthdayLaunched = false;
 
-        clearInterval(timer);
+let experienceStarted = false;
 
-        launchBirthday();
-
-    }
-
-});
+let soundUnlocked = false;
 
 
 /* ==========================
    TARGET DATE
 ========================== */
 
-/*
-   CHANGE THIS TIME WHEN TESTING
-*/
-
 const birthday =
-    new Date("October 6, 2026 09:10:00").getTime();
+    new Date("October 6, 2026 09:30:00").getTime();
 
 
-let timer = null;
+/* ==========================
+   SOUND UNLOCK
+========================== */
 
-let birthdayLaunched = false;
+function unlockSound() {
+
+    if (soundUnlocked) return;
+
+    music.volume = 0;
+
+    music.loop = true;
+
+    /*
+       The user has directly interacted
+       with the Begin button.
+
+       Playing audio here gives the browser
+       permission to allow later playback.
+    */
+
+    music.play()
+        .then(() => {
+
+            soundUnlocked = true;
+
+            music.pause();
+
+            music.currentTime = 0;
+
+        })
+        .catch(error => {
+
+            console.log(
+                "Sound unlock failed:",
+                error
+            );
+
+        });
+
+}
+
+
+/* ==========================
+   START EXPERIENCE
+========================== */
+
+function startExperience() {
+
+    if (experienceStarted) return;
+
+    experienceStarted = true;
+
+
+    /*
+       IMPORTANT:
+       This happens directly inside
+       the user's button click.
+
+       Therefore the browser treats it
+       as a legitimate audio interaction.
+    */
+
+    unlockSound();
+
+
+    /*
+       Fade out opening screen
+    */
+
+    startScreen.classList.add("hide");
+
+
+    /*
+       Start countdown AFTER the
+       opening interaction.
+    */
+
+    updateCountdown();
+
+    timer = setInterval(
+        updateCountdown,
+        1000
+    );
+
+}
+
+
+/* ==========================
+   START BUTTON
+========================== */
+
+startButton.addEventListener(
+    "click",
+    startExperience
+);
+
+
+/* ==========================
+   DEVELOPER MODE
+   Press "B" to launch
+========================== */
+
+document.addEventListener(
+    "keydown",
+    (event) => {
+
+        if (
+            event.key.toLowerCase() === "b"
+        ) {
+
+            /*
+               Unlock audio from the
+               keyboard interaction.
+            */
+
+            unlockSound();
+
+            clearInterval(timer);
+
+            startScreen.classList.add("hide");
+
+            launchBirthday();
+
+        }
+
+    }
+);
 
 
 /* ==========================
@@ -63,7 +181,8 @@ function updateCountdown() {
 
     const now = Date.now();
 
-    const distance = birthday - now;
+    const distance =
+        birthday - now;
 
 
     /* ==========================
@@ -85,27 +204,44 @@ function updateCountdown() {
        CALCULATE TIME
     ========================== */
 
-    const d = Math.floor(
-        distance / (1000 * 60 * 60 * 24)
-    );
+    const d =
+        Math.floor(
+            distance /
+            (1000 * 60 * 60 * 24)
+        );
 
 
-    const h = Math.floor(
-        (distance % (1000 * 60 * 60 * 24))
-        / (1000 * 60 * 60)
-    );
+    const h =
+        Math.floor(
+            (
+                distance %
+                (1000 * 60 * 60 * 24)
+            )
+            /
+            (1000 * 60 * 60)
+        );
 
 
-    const m = Math.floor(
-        (distance % (1000 * 60 * 60))
-        / (1000 * 60)
-    );
+    const m =
+        Math.floor(
+            (
+                distance %
+                (1000 * 60 * 60)
+            )
+            /
+            (1000 * 60)
+        );
 
 
-    const s = Math.floor(
-        (distance % (1000 * 60))
-        / 1000
-    );
+    const s =
+        Math.floor(
+            (
+                distance %
+                (1000 * 60)
+            )
+            /
+            1000
+        );
 
 
     /* ==========================
@@ -128,21 +264,14 @@ function updateCountdown() {
 
 
 /* ==========================
-   START TIMER
-========================== */
-
-updateCountdown();
-
-timer = setInterval(updateCountdown, 1000);
-
-
-/* ==========================
    LAUNCH BIRTHDAY
 ========================== */
 
 function launchBirthday() {
 
-    /* Prevent multiple launches */
+    /*
+       Prevent multiple launches
+    */
 
     if (birthdayLaunched) return;
 
@@ -162,9 +291,11 @@ function launchBirthday() {
 
     setTimeout(() => {
 
-        countdownScene.style.display = "none";
+        countdownScene.style.display =
+            "none";
 
-        transitionScene.style.opacity = "1";
+        transitionScene.style.opacity =
+            "1";
 
 
         /* ==========================
@@ -183,9 +314,11 @@ function launchBirthday() {
 
             setTimeout(() => {
 
-                transitionScene.style.opacity = "0";
+                transitionScene.style.opacity =
+                    "0";
 
-                birthdayScene.style.opacity = "1";
+                birthdayScene.style.opacity =
+                    "1";
 
 
                 /* ==========================
@@ -279,11 +412,13 @@ function launchBirthday() {
    CREATE STARS
 ========================== */
 
-const stars = document.getElementById("stars");
+const stars =
+    document.getElementById("stars");
 
 for (let i = 0; i < 120; i++) {
 
-    const star = document.createElement("div");
+    const star =
+        document.createElement("div");
 
     star.classList.add("star");
 
@@ -337,7 +472,8 @@ function startConfetti() {
 
     const duration = 6000;
 
-    const end = Date.now() + duration;
+    const end =
+        Date.now() + duration;
 
 
     (function frame() {
@@ -404,21 +540,22 @@ function fadeMusic() {
     let volume = 0;
 
 
-    const fade = setInterval(() => {
+    const fade =
+        setInterval(() => {
 
-        volume += 0.02;
+            volume += 0.02;
 
-        music.volume =
-            Math.min(volume, 1);
+            music.volume =
+                Math.min(volume, 1);
 
 
-        if (volume >= 1) {
+            if (volume >= 1) {
 
-            clearInterval(fade);
+                clearInterval(fade);
 
-        }
+            }
 
-    }, 120);
+        }, 120);
 
 }
 
@@ -434,7 +571,9 @@ function createTwenties() {
         const twenty =
             document.createElement("div");
 
-        twenty.classList.add("number20");
+        twenty.classList.add(
+            "number20"
+        );
 
         twenty.textContent = "20";
 
@@ -442,12 +581,17 @@ function createTwenties() {
             Math.random() * 100 + "%";
 
         twenty.style.animationDuration =
-            (10 + Math.random() * 10) + "s";
+            (
+                10 +
+                Math.random() * 10
+            ) + "s";
 
         twenty.style.animationDelay =
             Math.random() * 5 + "s";
 
-        document.body.appendChild(twenty);
+        document.body.appendChild(
+            twenty
+        );
 
     }
 
@@ -463,16 +607,18 @@ function revealPoem() {
     poemOverlay.style.opacity = "1";
 
 
-    poemParts.forEach((part, index) => {
+    poemParts.forEach(
+        (part, index) => {
 
-        setTimeout(() => {
+            setTimeout(() => {
 
-            part.style.animation =
-                "revealPoem 1.5s ease forwards";
+                part.style.animation =
+                    "revealPoem 1.5s ease forwards";
 
-        }, index * 2500);
+            }, index * 2500);
 
-    });
+        }
+    );
 
 
     setTimeout(() => {
