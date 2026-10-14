@@ -937,8 +937,8 @@ section{
 
 .exit-btn {
     position: absolute;
-    top: -55px;
-    right: 0;
+    top: -35px;
+    right: -40px;
 
     width: 42px;
     height: 42px;
