@@ -1,951 +1,654 @@
-/* ===========================
-   GLOBAL STYLES
-=========================== */
+/* ==========================
+   ELEMENTS
+========================== */
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+const startScreen = document.getElementById("startScreen");
+const startButton = document.getElementById("startButton");
+
+const countdownScene = document.getElementById("countdownScene");
+const transitionScene = document.getElementById("transitionScene");
+const birthdayScene = document.getElementById("birthdayScene");
+
+const spark = document.getElementById("spark");
+const music = document.getElementById("music");
+const photo = document.getElementById("birthdayPhoto");
+const birthdayTitle = document.getElementById("birthdayTitle");
+
+const days = document.getElementById("days");
+const hours = document.getElementById("hours");
+const minutes = document.getElementById("minutes");
+const seconds = document.getElementById("seconds");
+
+const poemOverlay = document.getElementById("poemOverlay");
+const poemParts = document.querySelectorAll(".poem-part");
+
+
+/* ==========================
+   STATE
+========================== */
+
+let timer = null;
+
+let birthdayLaunched = false;
+
+let experienceStarted = false;
+
+let soundUnlocked = false;
+
+
+/* ==========================
+   TARGET DATE
+========================== */
+
+const birthday =
+    new Date("October 6, 2026 09:30:00").getTime();
+
+
+/* ==========================
+   SOUND UNLOCK
+========================== */
+
+function unlockSound() {
+
+    if (soundUnlocked) return;
+
+    music.volume = 0;
+
+    music.loop = true;
+
+    /*
+       The user has directly interacted
+       with the Begin button.
+
+       Playing audio here gives the browser
+       permission to allow later playback.
+    */
+
+    music.play()
+        .then(() => {
+
+            soundUnlocked = true;
+
+            music.pause();
+
+            music.currentTime = 0;
+
+        })
+        .catch(error => {
+
+            console.log(
+                "Sound unlock failed:",
+                error
+            );
+
+        });
+
 }
 
-html,
-body{
-
-    width:100%;
-    height:100%;
-    overflow:hidden;
-
-    font-family:'Poppins', sans-serif;
-
-    background:#130325;
-
-    color:white;
-
-}
 
 /* ==========================
    START EXPERIENCE
 ========================== */
 
-#startScreen {
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
+function startExperience() {
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    if (experienceStarted) return;
 
-    background: #000;
-
-    text-align: center;
-
-    transition:
-        opacity 1.5s ease,
-        visibility 1.5s ease;
-}
+    experienceStarted = true;
 
 
-#startContent {
-    padding: 30px;
-}
+    /*
+       IMPORTANT:
+       This happens directly inside
+       the user's button click.
+
+       Therefore the browser treats it
+       as a legitimate audio interaction.
+    */
+
+    unlockSound();
 
 
-.start-small {
-    font-family: "Poppins", sans-serif;
+    /*
+       Fade out opening screen
+    */
 
-    font-size: 12px;
-
-    letter-spacing: 3px;
-
-    text-transform: uppercase;
-
-    color: rgba(255, 255, 255, 0.55);
-
-    margin-bottom: 18px;
-}
+    startScreen.classList.add("hide");
 
 
-#startContent h1 {
-    margin: 0;
+    /*
+       Start countdown AFTER the
+       opening interaction.
+    */
 
-    font-family: "Great Vibes", cursive;
+    updateCountdown();
 
-    font-size: clamp(60px, 12vw, 110px);
-
-    font-weight: 400;
-
-    color: white;
-
-    text-shadow:
-        0 0 10px rgba(255,255,255,0.25),
-        0 0 30px rgba(94,42,132,0.8);
-}
-
-
-.start-line {
-    width: 60px;
-    height: 1px;
-
-    margin: 20px auto;
-
-    background: rgba(255,255,255,0.5);
-}
-
-
-#startContent p {
-    font-family: "Poppins", sans-serif;
-
-    font-size: 14px;
-
-    letter-spacing: 1px;
-
-    color: rgba(255,255,255,0.7);
-
-    margin-bottom: 35px;
-}
-
-
-#startButton {
-    padding: 13px 32px;
-
-    border: 1px solid rgba(255,255,255,0.45);
-
-    border-radius: 30px;
-
-    background: rgba(255,255,255,0.05);
-
-    color: white;
-
-    font-family: "Poppins", sans-serif;
-
-    font-size: 13px;
-
-    letter-spacing: 2px;
-
-    cursor: pointer;
-
-    transition:
-        background 0.4s ease,
-        transform 0.4s ease,
-        box-shadow 0.4s ease;
-}
-
-
-#startButton:hover {
-    background: rgba(255,255,255,0.12);
-
-    transform: scale(1.05);
-
-    box-shadow:
-        0 0 20px rgba(255,255,255,0.15);
-}
-
-
-#startScreen.hide {
-    opacity: 0;
-    visibility: hidden;
-
-    pointer-events: none;
-}
-
-/* ===========================
-   SCENES
-=========================== */
-
-section{
-
-    position:absolute;
-
-    inset:0;
-
-    display:flex;
-
-    flex-direction:column;
-
-    justify-content:center;
-
-    align-items:center;
-
-    transition:opacity 1.5s ease;
+    timer = setInterval(
+        updateCountdown,
+        1000
+    );
 
 }
 
-#countdownScene{
 
-    background:
-    radial-gradient(circle at top,#35115d,#130325);
+/* ==========================
+   START BUTTON
+========================== */
 
-}
+startButton.addEventListener(
+    "click",
+    startExperience
+);
 
-#transitionScene{
 
-    background:black;
+/* ==========================
+   DEVELOPER MODE
+   Press "B" to launch
+========================== */
 
-    opacity:0;
+document.addEventListener(
+    "keydown",
+    (event) => {
 
-    pointer-events:none;
+        if (
+            event.key.toLowerCase() === "b"
+        ) {
 
-}
+            /*
+               Unlock audio from the
+               keyboard interaction.
+            */
 
-#birthdayScene{
+            unlockSound();
 
-    background:
-    radial-gradient(circle at top,#5E2A84,#130325);
+            clearInterval(timer);
 
-    opacity:0;
+            startScreen.classList.add("hide");
 
-    pointer-events:none;
+            launchBirthday();
 
-    justify-content:flex-start;
-
-    padding-top:50px;
-
-}
-
-#countdownScene h2{
-
-    font-family:"Cinzel", serif;
-
-    font-size:2rem;
-
-    letter-spacing:3px;
-
-    margin-bottom:50px;
-
-    color:#FFD700;
-
-}
-
-#countdown{
-
-    display:flex;
-
-    gap:30px;
-
-}
-
-.time-box{
-
-    width:140px;
-
-    height:140px;
-
-    border-radius:20px;
-
-    background:rgba(255,255,255,.05);
-
-    border:1px solid rgba(255,215,0,.35);
-
-    backdrop-filter:blur(12px);
-
-    display:flex;
-
-    flex-direction:column;
-
-    justify-content:center;
-
-    align-items:center;
-
-    box-shadow:
-
-    0 0 25px rgba(255,215,0,.08);
-
-}
-
-.time-box span{
-
-    font-size:3rem;
-
-    font-weight:700;
-
-    color:#FFD700;
-
-}
-
-.time-box small{
-
-    margin-top:10px;
-
-    font-size:.9rem;
-
-    letter-spacing:2px;
-
-    color:white;
-
-    opacity:.7;
-
-}
-
-@media (max-width:768px){
-
-    #countdown{
-
-        flex-wrap:wrap;
-
-        justify-content:center;
-
-        gap:20px;
+        }
 
     }
+);
 
-    .time-box{
 
-        width:120px;
-        height:120px;
+/* ==========================
+   COUNTDOWN
+========================== */
 
-    }
+function updateCountdown() {
 
-    .time-box span{
+    const now = Date.now();
 
-        font-size:2.5rem;
+    const distance =
+        birthday - now;
 
-    }
-
-    #countdownScene h2{
-
-        font-size:1.5rem;
-
-        text-align:center;
-
-        padding:0 20px;
-
-    }
-
-}
-
-/* ===========================
-   STARS
-=========================== */
-
-#stars{
-
-    position:fixed;
-
-    inset:0;
-
-    overflow:hidden;
-
-    pointer-events:none;
-
-    z-index:0;
-
-}
-
-.star{
-
-    position:absolute;
-
-    width:3px;
-
-    height:3px;
-
-    background:white;
-
-    border-radius:50%;
-
-    opacity:.2;
-
-    animation:twinkle 4s infinite ease-in-out;
-
-}
-
-@keyframes twinkle{
-
-    0%{
-
-        opacity:.15;
-        transform:scale(1);
-
-    }
-
-    50%{
-
-        opacity:1;
-        transform:scale(1.8);
-
-    }
-
-    100%{
-
-        opacity:.15;
-        transform:scale(1);
-
-    }
-
-}
-
-/* ===========================
-   PARTICLES
-=========================== */
-
-#particles{
-
-    position:fixed;
-
-    inset:0;
-
-    overflow:hidden;
-
-    pointer-events:none;
-
-    z-index:1;
-
-}
-
-.particle{
-
-    position:absolute;
-
-    width:6px;
-
-    height:6px;
-
-    border-radius:50%;
-
-    background:#FFD700;
-
-    opacity:.4;
-
-    filter:blur(1px);
-
-    animation:floatUp linear infinite;
-
-}
-
-@keyframes floatUp{
-
-    from{
-
-        transform:translateY(120vh);
-
-        opacity:0;
-
-    }
-
-    15%{
-
-        opacity:.45;
-
-    }
-
-    100%{
-
-        transform:translateY(-20vh);
-
-        opacity:0;
-
-    }
-
-}
-
-#countdownScene{
-
-    z-index:5;
-
-}
-
-#countdown{
-
-    position:relative;
-
-    z-index:10;
-
-}
-
-#countdownScene h2{
-
-    position:relative;
-
-    z-index:10;
-
-}
-
-/* ===========================
-   GOLDEN SPARK
-=========================== */
-
-#spark{
-
-    width:10px;
-
-    height:10px;
-
-    border-radius:50%;
-
-    background:#FFD700;
-
-    box-shadow:
-
-        0 0 15px #FFD700,
-        0 0 35px #FFD700,
-        0 0 70px #FFD700;
-
-    transform:scale(0);
-
-}
-
-@keyframes sparkBurst{
-
-    0%{
-
-        transform:scale(0);
-
-        opacity:1;
-
-    }
-
-    50%{
-
-        transform:scale(6);
-
-        opacity:1;
-
-    }
-
-    100%{
-
-        transform:scale(35);
-
-        opacity:0;
-
-    }
-
-}
-
-#birthdayPhoto{
-
-    width:320px;
-
-    max-width:90vw;
-
-    height:auto;
-    max-height:90vh;
-
-    border-radius:22px;
-
-    border:4px solid #FFD700;
-
-    box-shadow:
-
-        0 0 30px rgba(255,215,0,.45);
-
-    opacity:0;
-
-    transform:scale(.95);
-
-}
-
-@keyframes revealPhoto{
-
-    from{
-
-        opacity:0;
-
-        transform:scale(.95);
-
-    }
-
-    to{
-
-        opacity:1;
-
-        transform:scale(1);
-
-    }
-
-}
-
-#birthdayScene h1{
-
-    font-family:"Great Vibes", cursive;
-
-    font-size:4rem;
-
-    color:#FFD700;
-
-    margin-bottom:20px;
-
-    text-shadow:
-
-        0 0 18px rgba(255,215,0,.45);
-
-}
-
-#birthdayTitle{
-
-    opacity:0;
-
-}
-
-@keyframes revealTitle{
-
-    from{
-
-        opacity:0;
-
-        transform:translateY(-25px);
-
-    }
-
-    to{
-
-        opacity:1;
-
-        transform:translateY(0);
-
-    }
-
-}
-
-.number20{
-
-    position:absolute;
-
-    font-size:3rem;
-
-    font-family:"Cinzel", serif;
-
-    color:#FFD700;
-
-    opacity:.15;
-
-    pointer-events:none;
-
-    animation:floatTwenty linear infinite;
-
-}
-
-@keyframes floatTwenty{
-
-    from{
-
-        transform:translateX(-20vw);
-
-    }
-
-    to{
-
-        transform:translateX(120vw);
-
-    }
-
-}
-
-/* ===========================
-   POEM OVERLAY
-=========================== */
-
-#poemOverlay{
-
-    position:absolute;
-
-    inset:0;
-
-    background:rgba(0,0,0,.85);
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-    opacity:0;
-
-    pointer-events:none;
-
-    transition:opacity 2s ease;
-
-}
-
-#poem{
-
-    width:min(700px,90%);
-
-    text-align:center;
-
-    color:white;
-
-    font-family:"Poppins",sans-serif;
-
-    line-height:1.4;
-
-    margin:15px 0;
-
-}
-
-.poem-part strong{
-
-    font-size:2.3rem;
-
-    color:#FFD700;
-
-    display:block;
-
-    margin-bottom:0px;
-
-    letter-spacing:1px;
-
-    line-height:1;
-
-}
-@keyframes revealPoem{
-
-    from{
-
-        opacity:0;
-
-        transform:translateY(20px);
-
-    }
-
-    to{
-
-        opacity:1;
-
-        transform:translateY(0);
-
-    }
-
-}
-
-.final-line{
-
-    font-size:1.5rem;
-
-    color:#FFD700;
-
-    font-weight:600;
-
-}
-
-.number20{
-
-    transition:opacity 2s ease;
-
-}
-
-/* ==========================================
-   MOBILE RESPONSIVE DESIGN
-========================================== */
-
-@media (max-width: 600px) {
 
     /* ==========================
-       COUNTDOWN
+       BIRTHDAY REACHED
     ========================== */
 
-    #countdownScene {
-        padding: 20px;
-    }
+    if (distance <= 0) {
 
-    #countdownScene h2 {
-        font-size: 1.35rem;
-        letter-spacing: 2px;
-        margin-bottom: 35px;
-    }
+        clearInterval(timer);
 
-    #countdown {
-        width: 100%;
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 15px;
-        padding: 0 15px;
-    }
+        launchBirthday();
 
-    .time-box {
-        width: 100%;
-        height: 105px;
-        border-radius: 16px;
-    }
+        return;
 
-    .time-box span {
-        font-size: 2rem;
-    }
-
-    .time-box small {
-        font-size: .7rem;
-        letter-spacing: 1.5px;
-        margin-top: 6px;
     }
 
 
     /* ==========================
-       BIRTHDAY SCENE
+       CALCULATE TIME
     ========================== */
 
-    #birthdayScene {
-        padding-top: 30px;
-        padding-left: 15px;
-        padding-right: 15px;
-        overflow: hidden;
-    }
+    const d =
+        Math.floor(
+            distance /
+            (1000 * 60 * 60 * 24)
+        );
 
-    #birthdayScene h1 {
-        font-size: 2.8rem;
-        text-align: center;
-        line-height: 1.1;
-        margin-bottom: 15px;
-    }
+
+    const h =
+        Math.floor(
+            (
+                distance %
+                (1000 * 60 * 60 * 24)
+            )
+            /
+            (1000 * 60 * 60)
+        );
+
+
+    const m =
+        Math.floor(
+            (
+                distance %
+                (1000 * 60 * 60)
+            )
+            /
+            (1000 * 60)
+        );
+
+
+    const s =
+        Math.floor(
+            (
+                distance %
+                (1000 * 60)
+            )
+            /
+            1000
+        );
 
 
     /* ==========================
-       PHOTO
+       DISPLAY
     ========================== */
 
-    #birthdayPhoto {
-        width: min(300px, 82vw);
-        max-height: 55vh;
-        object-fit: cover;
-        border-width: 3px;
-        border-radius: 18px;
-    }
+    days.textContent =
+        String(d).padStart(2, "0");
+
+    hours.textContent =
+        String(h).padStart(2, "0");
+
+    minutes.textContent =
+        String(m).padStart(2, "0");
+
+    seconds.textContent =
+        String(s).padStart(2, "0");
+
+}
+
+
+/* ==========================
+   LAUNCH BIRTHDAY
+========================== */
+
+function launchBirthday() {
+
+    /*
+       Prevent multiple launches
+    */
+
+    if (birthdayLaunched) return;
+
+    birthdayLaunched = true;
 
 
     /* ==========================
-       FLOATING 20s
+       FADE OUT COUNTDOWN
     ========================== */
 
-    .number20 {
-        font-size: 2rem;
-    }
+    countdownScene.style.opacity = "0";
 
 
     /* ==========================
-       POEM OVERLAY
+       BLACK TRANSITION
     ========================== */
 
-    #poemOverlay {
-        padding: 25px 15px;
-        overflow-y: auto;
-    }
+    setTimeout(() => {
 
-    #poem {
-        width: 100%;
-        max-width: 500px;
-        font-size: .92rem;
-        line-height: 1.5;
-        padding: 10px;
-    }
+        countdownScene.style.display =
+            "none";
 
-    .poem-part {
-        margin-bottom: 10px;
-    }
+        transitionScene.style.opacity =
+            "1";
 
-    .poem-part strong {
-        font-size: 1.8rem;
-    }
 
-    .final-line {
-        font-size: 1.15rem;
+        /* ==========================
+           GOLDEN SPARK
+        ========================== */
+
+        setTimeout(() => {
+
+            spark.style.animation =
+                "sparkBurst .9s ease-out forwards";
+
+
+            /* ==========================
+               SHOW BIRTHDAY
+            ========================== */
+
+            setTimeout(() => {
+
+                transitionScene.style.opacity =
+                    "0";
+
+                birthdayScene.style.opacity =
+                    "1";
+
+
+                /* ==========================
+                   CONFETTI
+                ========================== */
+
+                startConfetti();
+
+
+                /* ==========================
+                   MUSIC
+                ========================== */
+
+                music.volume = 0;
+
+                music.loop = true;
+
+                music.play()
+                    .then(() => {
+
+                        fadeMusic();
+
+                    })
+                    .catch(error => {
+
+                        console.log(
+                            "Music playback blocked:",
+                            error
+                        );
+
+                    });
+
+
+                /* ==========================
+                   FLOATING 20s
+                ========================== */
+
+                createTwenties();
+
+
+                /* ==========================
+                   PHOTO
+                ========================== */
+
+                photo.style.animation =
+                    "revealPhoto 2.5s ease forwards";
+
+
+                /* ==========================
+                   TITLE
+                ========================== */
+
+                setTimeout(() => {
+
+                    birthdayTitle.style.animation =
+                        "revealTitle 1.5s ease forwards";
+
+                }, 800);
+
+
+            }, 900);
+
+        }, 500);
+
+    }, 1500);
+
+
+    /* ==========================
+       POEM
+    ========================== */
+
+    setTimeout(() => {
+
+        revealPoem();
+
+
+        document
+            .querySelectorAll(".number20")
+            .forEach(num => {
+
+                num.style.opacity = ".05";
+
+            });
+
+    }, 10000);
+
+}
+
+
+/* ==========================
+   CREATE STARS
+========================== */
+
+const stars =
+    document.getElementById("stars");
+
+for (let i = 0; i < 120; i++) {
+
+    const star =
+        document.createElement("div");
+
+    star.classList.add("star");
+
+    star.style.left =
+        Math.random() * 100 + "%";
+
+    star.style.top =
+        Math.random() * 100 + "%";
+
+    star.style.animationDelay =
+        Math.random() * 4 + "s";
+
+    stars.appendChild(star);
+
+}
+
+
+/* ==========================
+   CREATE PARTICLES
+========================== */
+
+const particles =
+    document.getElementById("particles");
+
+for (let i = 0; i < 35; i++) {
+
+    const particle =
+        document.createElement("div");
+
+    particle.classList.add("particle");
+
+    particle.style.left =
+        Math.random() * 100 + "%";
+
+    particle.style.animationDuration =
+        (8 + Math.random() * 8) + "s";
+
+    particle.style.animationDelay =
+        Math.random() * 8 + "s";
+
+    particles.appendChild(particle);
+
+}
+
+
+/* ==========================
+   CONFETTI
+========================== */
+
+function startConfetti() {
+
+    const duration = 6000;
+
+    const end =
+        Date.now() + duration;
+
+
+    (function frame() {
+
+        confetti({
+
+            particleCount: 4,
+
+            angle: 60,
+
+            spread: 70,
+
+            origin: {
+                x: 0
+            },
+
+            colors: [
+                "#FFD700",
+                "#5E2A84",
+                "#FFFFFF"
+            ]
+
+        });
+
+
+        confetti({
+
+            particleCount: 4,
+
+            angle: 120,
+
+            spread: 70,
+
+            origin: {
+                x: 1
+            },
+
+            colors: [
+                "#FFD700",
+                "#5E2A84",
+                "#FFFFFF"
+            ]
+
+        });
+
+
+        if (Date.now() < end) {
+
+            requestAnimationFrame(frame);
+
+        }
+
+    })();
+
+}
+
+
+/* ==========================
+   FADE MUSIC
+========================== */
+
+function fadeMusic() {
+
+    let volume = 0;
+
+
+    const fade =
+        setInterval(() => {
+
+            volume += 0.02;
+
+            music.volume =
+                Math.min(volume, 1);
+
+
+            if (volume >= 1) {
+
+                clearInterval(fade);
+
+            }
+
+        }, 120);
+
+}
+
+
+/* ==========================
+   CREATE FLOATING 20s
+========================== */
+
+function createTwenties() {
+
+    for (let i = 0; i < 8; i++) {
+
+        const twenty =
+            document.createElement("div");
+
+        twenty.classList.add(
+            "number20"
+        );
+
+        twenty.textContent = "20";
+
+        twenty.style.top =
+            Math.random() * 100 + "%";
+
+        twenty.style.animationDuration =
+            (
+                10 +
+                Math.random() * 10
+            ) + "s";
+
+        twenty.style.animationDelay =
+            Math.random() * 5 + "s";
+
+        document.body.appendChild(
+            twenty
+        );
+
     }
 
 }
 
 
-/* ==========================================
-   SMALL PHONES
-   Example: Galaxy S20 / iPhone-sized screens
-========================================== */
+/* ==========================
+   REVEAL POEM
+========================== */
 
-@media (max-width: 400px) {
+function revealPoem() {
 
-    #countdownScene h2 {
-        font-size: 1.15rem;
-        margin-bottom: 25px;
-    }
+    poemOverlay.style.opacity = "1";
 
-    #countdown {
-        gap: 10px;
-        padding: 0 10px;
-    }
 
-    .time-box {
-        height: 95px;
-    }
+    poemParts.forEach(
+        (part, index) => {
 
-    .time-box span {
-        font-size: 1.7rem;
-    }
+            setTimeout(() => {
 
-    .time-box small {
-        font-size: .65rem;
-    }
+                part.style.animation =
+                    "revealPoem 1.5s ease forwards";
 
-    #birthdayScene {
-        padding-top: 25px;
-    }
+            }, index * 2500);
 
-    #birthdayScene h1 {
-        font-size: 2.35rem;
-    }
+        }
+    );
 
-    #birthdayPhoto {
-        width: 78vw;
-        max-height: 50vh;
-    }
 
-    #poem {
-        font-size: .82rem;
-        line-height: 1.4;
-    }
+    setTimeout(() => {
 
-    .poem-part strong {
-        font-size: 1.6rem;
-    }
+        hidePoem();
 
-    .final-line {
-        font-size: 1rem;
-    }
+    }, 50000);
 
 }
 
-/* ===== PHOTO FIX: paste at the very bottom of style.css ===== */
 
-#birthdayScene{
-    justify-content:center;   /* centers title + photo vertically */
-    padding:15px;
+/* ==========================
+   HIDE POEM
+========================== */
+
+function hidePoem() {
+
+    poemOverlay.style.opacity = "0";
+
+
+    document
+        .querySelectorAll(".number20")
+        .forEach(num => {
+
+            num.style.opacity = ".15";
+
+        });
+
 }
 
-#birthdayPhoto{
-    width:auto;               /* let the photo keep its real proportions */
-    height:auto;
-    max-width:90vw;           /* fills most of the screen width on phones */
-    max-height:calc(100vh - 170px);   /* fallback for older browsers */
-    max-height:calc(100dvh - 170px);  /* leaves room for the title */
-    object-fit:contain;       /* never crops */
-    flex-shrink:0;
-}
-
-@media (min-width:601px){
-    #birthdayPhoto{
-        max-width:min(420px, 90vw);   /* keeps it from getting huge on desktop */
-        max-height:calc(100dvh - 200px);
-    }
-}
-
-.exit-btn {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    width: 42px;
-    height: 42px;
-    border: 1px solid rgba(255, 255, 255, 0.35);
-    border-radius: 50%;
-    background: rgba(0, 0, 0, 0.25);
-    color: rgba(255, 255, 255, 0.85);
-    font-size: 25px;
-    font-weight: 300;
-    line-height: 1;
-    cursor: pointer;
-    backdrop-filter: blur(6px);
-    transition: all 0.3s ease;
-    z-index: 9999;
-}
-
-.exit-btn:hover {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.7);
-    color: white;
-    transform: rotate(90deg);
+function exitExperience() {
+    window.location.href = "https://www.google.com";
 }
