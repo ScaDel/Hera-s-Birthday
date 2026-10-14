@@ -41,7 +41,7 @@ let soundUnlocked = false;
 ========================== */
 
 const birthday =
-    new Date("October 6, 2026 09:30:00").getTime();
+    new Date("August 4, 2026 00:00:00").getTime();
 
 
 /* ==========================
