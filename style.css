@@ -899,3 +899,54 @@ section{
     }
 
 }
+
+
+/* ===== PHOTO FIX: paste at the very bottom of style.css ===== */
+
+#birthdayScene{
+    justify-content:center;   /* centers title + photo vertically */
+    padding:15px;
+}
+
+#birthdayPhoto{
+    width:auto;               /* let the photo keep its real proportions */
+    height:auto;
+    max-width:90vw;           /* fills most of the screen width on phones */
+    max-height:calc(100vh - 170px);   /* fallback for older browsers */
+    max-height:calc(100dvh - 170px);  /* leaves room for the title */
+    object-fit:contain;       /* never crops */
+    flex-shrink:0;
+}
+
+@media (min-width:601px){
+    #birthdayPhoto{
+        max-width:min(420px, 90vw);   /* keeps it from getting huge on desktop */
+        max-height:calc(100dvh - 200px);
+    }
+}
+
+.exit-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 42px;
+    height: 42px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.25);
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 25px;
+    font-weight: 300;
+    line-height: 1;
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    transition: all 0.3s ease;
+    z-index: 9999;
+}
+
+.exit-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.7);
+    color: white;
+    transform: rotate(90deg);
+}
