@@ -108,10 +108,22 @@
         </h1>
 
 
-        <img
-            src="hera.jpeg"
-            id="birthdayPhoto"
-            alt="Birthday Girl">
+       <div class="photo-wrapper">
+
+    <img
+        src="hera.jpeg"
+        id="birthdayPhoto"
+        alt="Birthday Girl">
+
+    <button
+        type="button"
+        class="exit-btn"
+        onclick="exitExperience()"
+        aria-label="Exit">
+        ×
+    </button>
+
+</div>
 
 
         <!-- ==========================
@@ -192,8 +204,6 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
     <script src="script.js"></script>
-
-    <button class="exit-btn" onclick="exitExperience()" aria-label="Exit">×</button>
 
 </body>
 </html>
